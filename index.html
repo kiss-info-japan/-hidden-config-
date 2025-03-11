@@ -1,294 +1,208 @@
-<!DOCTYPE html>   
-<html lang="ja">
+<html lang="ja"> 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>宗教診断チャット</title>
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <title>Hidden Config</title>
     <style>
+        /* 全体のレイアウト */
         body {
-            font-family: 'Noto Serif JP', serif;
-            background: linear-gradient(to bottom, #000000, #222222);
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+            background-color: #000;
+            color: #FFF;
+            font-family: Arial, sans-serif;
+            font-size: 65%;
             margin: 0;
-        }
-
-        #statusMessage {
-            font-size: 16px;
-            color: #940000;  /* 文字色を変更 */
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 10px;
-            height: 20px;
-        }
-
-        h1 {
-            font-size: 28px;
-            color: #ffffff;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-            margin-bottom: 20px;
-        }
-
-        #chatContainer {
-            width: 90%;
-            max-width: 400px;
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-            border-radius: 12px;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            height: 100vh;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            backdrop-filter: blur(5px);
         }
 
-        #chatBox {
-            height: 300px;
-            overflow-y: auto;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .message {
-            max-width: 80%;
-            padding: 10px;
-            margin: 5px;
-            border-radius: 10px;
+        /* チャットボックス */
+        .console {
+            white-space: pre-wrap;
             word-wrap: break-word;
-            font-size: 14px;
+            font-size: 1em;
+            line-height: 1.5;
+            margin: 20px;
+            padding: 20px;
+            background-color: #000000;
+            color: #FFF;
+            width: calc(100vw - 40px);
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        /* 入力エリア */
+        .input-line {
+            font-size: 1em;
+            margin-top: 10px;
+            width: 100%;
+            color: #FFF;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-line input {
+            background-color: transparent;
+            color: #FFF;
+            border: none;
+            border-bottom: 1px solid #FFF;
+            outline: none;
+            width: 100%;
+            font-family: Arial, sans-serif;
+            font-size: 65%;
+        }
+
+        .input-line input:focus {
+            border-color: #000000;
+        }
+
+        /* 質問のスタイル */
+        .question {
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        /* 既存メッセージ */
+        .message {
+            margin-bottom: 10px;
+            font-size: 1em;
         }
 
         .user {
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
             color: #ffffff;
-            align-self: flex-end;
         }
 
         .system {
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
-            color: #cccccc;
-            align-self: flex-start;
-        }
-
-        #inputContainer {
-            display: flex;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.6);
-        }
-
-        #userInput {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 5px;
-            font-size: 16px;
-            background: rgba(255, 255, 255, 0.1);
             color: #ffffff;
-            transition: all 0.3s ease;
         }
 
-        #userInput:focus {
-            border-color: #FF00FF; /* フォーカス時のハイライトカラー */
-            background-color: rgba(255, 255, 255, 0.2); /* 背景色の強調 */
-        }
-
-        button {
-            padding: 10px 20px;
-            cursor: pointer;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-family: 'Noto Serif JP', serif;
-            transition: all 0.3s ease-in-out;
-        }
-
-        #sendButton {
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0));
-            color: #000000;
-        }
-
+        /* 診断開始ボタン */
         #startButton {
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0));
-            color: #000000;
-            margin-bottom: 10px;
+        background-color: #000000;
+        color: #FFF;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        font-size: 65%;
+        position: absolute; /* 位置指定 */
+        top: 20px; /* 上から20px */
+        left: 20px; /* 左から20px */
+        border-radius: 5px;
+        z-index: 10; /* 他の要素より前面に表示 */
+}
+
+        #startButton:hover {
+            background-color: #1f1f1f;
         }
 
-        button:hover {
-            transform: scale(1.05);
-        }
-
-        #modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
+        /* ステータスメッセージ */
+        #statusMessage {
             color: #ffffff;
-            z-index: 1000;
-        }
-
-        #modalContent {
-            background: #333;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            width: 100%;
-            max-width: 500px;
-            height: 100%;
-            overflow-y: auto;
-            backdrop-filter: blur(10px);
-        }
-
-        #modalContent::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        #modalContent::-webkit-scrollbar-thumb {
-            background-color: #555;
-            border-radius: 10px;
-        }
-
-        #modalContent::-webkit-scrollbar-track {
-            background-color: #222;
-            border-radius: 10px;
-        }
-
-        #modalMessage {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            font-size: 14px;
-        }
-
-        #modalCloseButton {
-            background-color: #ffffff;
-            border: none;
+            position: absolute; /* 位置指定 */
             padding: 10px 20px;
-            font-size: 14px;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-top: 10px;
-        }
-
-        /* レスポンシブ対応 */
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 24px;
-            }
-
-            #chatContainer {
-                width: 95%;
-            }
-
-            #userInput {
-                font-size: 14px;
-            }
+            top: 20px; /* 上から20px */
+            left: 100px; 
         }
     </style>
 </head>
 <body>
-    <div id="statusMessage"></div>
-    <h1>あなたにおすすめの宗教診断</h1>
-    <button id="startButton">診断を開始</button>
-    <div id="chatContainer">
-        <div id="chatBox"></div>
-        <div id="inputContainer">
-            <input type="text" id="userInput" placeholder="メッセージを入力">
-            <button id="sendButton">送信</button>
-        </div>
-    </div>
 
-    <!-- モーダルウインドウ -->
-    <div id="modal">
-        <div id="modalContent">
-            <p id="modalMessage"></p>
-            <button id="modalCloseButton">閉じる</button>
-        </div>
+    <button id="startButton">診断を開始</button>
+    <div id="statusMessage"></div>
+    <div id="chatContainer">
+        <div id="chatBox" class="console"></div>
     </div>
 
     <script>
         const BASE_URL = "http://localhost:3000";
         const userId = "123";
 
-        function setStatusMessage(message) {
-            document.getElementById("statusMessage").innerText = message;
+        // メッセージ追加
+function appendMessage(content, type) {
+    const chatBox = document.getElementById("chatBox");
+    const messageDiv = document.createElement("div");
+    messageDiv.classList.add("message", type);
+    chatBox.appendChild(messageDiv);
+
+    if (type === "system") {
+        // 質問文のみタイプライターエフェクトを適用
+        typewriterEffect(messageDiv, content);
+    } else {
+        // 回答文は即座に表示
+        messageDiv.innerText = content;
+    }
+
+    chatBox.scrollTop = chatBox.scrollHeight; // 最新メッセージにスクロール
+    }
+        // タイプライターエフェクト
+        function typewriterEffect(element, content) {
+            let i = 0;
+            element.innerHTML = ''; // 最初に空にする
+            const typingInterval = setInterval(() => {
+                element.innerHTML += content.charAt(i);
+                i++;
+                if (i >= content.length) {
+                    clearInterval(typingInterval);
+                }
+            }, 50); // 50ミリ秒ごとに1文字ずつ表示
         }
 
-        function appendMessage(content, type) {
-            const chatBox = document.getElementById("chatBox");
-            const messageDiv = document.createElement("div");
-            messageDiv.classList.add("message", type);
-            messageDiv.innerHTML = content;
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        // モーダルウインドウを表示する関数
-        function showModal(message) {
-            const modal = document.getElementById("modal");
-            const modalMessage = document.getElementById("modalMessage");
-            const formattedMessage = message.replace(/[。]/g, "。<br>");
-            modalMessage.innerHTML = formattedMessage;
-            modal.style.display = "flex";
-        }
-
-        // モーダルウインドウを閉じる
-        document.getElementById("modalCloseButton").addEventListener("click", () => {
-            const modal = document.getElementById("modal");
-            modal.style.display = "none";
-        });
-
-        document.getElementById("startButton").addEventListener("click", async () => {
-            setStatusMessage("質問生成中...");
-
-            try {
-                const response = await fetch(`${BASE_URL}/start-diagnosis`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ userId })
-                });
-
-                if (!response.ok) throw new Error("サーバーエラー");
-
-                const data = await response.json();
-                setStatusMessage("");
-                if (data.reply) appendMessage(data.reply, "system");
-            } catch (error) {
-                setStatusMessage("エラーが発生しました");
-                alert("通信エラーが発生しました。");
+        // 入力フィールドを追加
+        function appendInputField() {
+            // 既存の入力フィールドを削除
+            const existingInputField = document.querySelector(".input-line");
+            if (existingInputField) {
+                existingInputField.remove();
             }
-        });
 
-        document.getElementById("sendButton").addEventListener("click", sendMessage);
-        document.getElementById("userInput").addEventListener("keydown", (event) => {
-            if (event.key === "Enter") sendMessage();
-        });
+            const chatBox = document.getElementById("chatBox");
+            const inputLineDiv = document.createElement("div");
+            inputLineDiv.classList.add("input-line");
 
-        async function sendMessage() {
-            const input = document.getElementById("userInput");
-            const message = input.value.trim();
+            const inputField = document.createElement("input");
+            inputField.type = "text";
+            inputField.placeholder = "メッセージを入力";
+
+            inputLineDiv.appendChild(inputField);
+            chatBox.appendChild(inputLineDiv);
+
+            inputField.focus(); // 自動的にフォーカスを当てる
+
+            inputField.addEventListener("keydown", (event) => {
+                if (event.key === "Enter") {
+                    sendMessage(inputField.value);
+                    inputField.value = ""; // 入力後にフィールドをクリア
+                }
+            });
+
+            chatBox.scrollTop = chatBox.scrollHeight;  // 最新のメッセージにスクロール
+        }
+
+        // メッセージ送信
+        async function sendMessage(message) {
             if (!message) return;
 
             appendMessage(message, "user");
-            input.value = "";
+
+            // メッセージ送信後、入力フィールドを消去
+            const inputField = document.querySelector(".input-line input");
+            inputField.value = "";
 
             setStatusMessage("診断結果生成中...");
 
             try {
-                const response = await fetch(`${BASE_URL}/chat`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ userId, message })
-                });
+    const response = await fetch(`${BASE_URL}/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, message })
+    });
 
                 if (!response.ok) throw new Error("サーバーエラー");
 
@@ -296,14 +210,49 @@
                 setStatusMessage("");
 
                 if (data.reply.includes("診断結果")) {
-                    showModal(data.reply); 
+                    appendMessage(data.reply, "system");
                 } else {
                     appendMessage(data.reply, "system");
                 }
+
+                // 次の質問表示後に入力フィールドを追加
+                appendInputField();
             } catch (error) {
                 setStatusMessage("エラーが発生しました");
                 alert("通信エラーが発生しました。");
             }
+        }
+
+        // 診断開始ボタン
+        document.getElementById("startButton").addEventListener("click", async () => {
+            setStatusMessage("質問生成中...");
+
+            try {
+    const response = await fetch(`${BASE_URL}/start-diagnosis`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId })
+    });
+
+
+                if (!response.ok) throw new Error("サーバーエラー");
+
+                const data = await response.json();
+                setStatusMessage("");
+                if (data.reply) {
+                    appendMessage(data.reply, "system");
+                }
+
+                // 最初の質問後に入力フィールドを追加
+                appendInputField();
+            } catch (error) {
+                setStatusMessage("エラーが発生しました");
+                alert("通信エラーが発生しました。");
+            }
+        });
+
+        function setStatusMessage(message) {
+            document.getElementById("statusMessage").innerText = message;
         }
     </script>
 </body>
