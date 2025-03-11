@@ -80,7 +80,7 @@ app.post('/start-diagnosis', async (req, res) => {
         userSessions[userId] = { questions, answers: [] };
 
         // 最初の質問を送信
-        res.json({ reply: `Hidden Config\n\n最初の質問です\n${questions[0]}` });
+        res.json({ reply: `Hidden Config\n\n多くの日本人は無宗教とされるが、実際には文化や社会的影響によって無意識のうちに信念が形成されている。\n\nそして、その信念はPCの隠し設定（Hidden Config）のように、私たちの言動に知らず知らずのうちに作用し続ける。\n\nこのサイトでは、AIが生成した15の質問に答えることで、あなたに最適な宗教が提案される。\n\nその結果に違和感を覚えたなら、\n\nそれは無自覚の信念があなたの思考を支配していることに気づく瞬間であり、\n\n同時に、あなたの中にすでに宗教が存在していることに気づく瞬間でもある。\n\n\n\n診断を開始\n${questions[0]}` });
 
     } catch (error) {
         console.error("🚨 サーバーエラー:", error);
