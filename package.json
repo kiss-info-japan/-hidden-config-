@@ -1,11 +1,10 @@
 {
-  "name": "mistral-diagnosis-api",
+  "name": "hidden-config",
   "version": "1.0.0",
-  "description": "Mistral APIで診断を行うサーバー",
-  "main": "api/server.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "node api/server.js",
-    "start": "node api/server.js"  
+    "start": "node server.js",
+    "vercel-build": "node server.js"
   },
   "dependencies": {
     "express": "^4.21.2",
