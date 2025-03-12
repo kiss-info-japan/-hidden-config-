@@ -1,4 +1,4 @@
-require('dotenv').config(); 
+require('dotenv').config();  
 const express = require('express');
 const cors = require('cors');
 const fetch = require('node-fetch');
@@ -131,45 +131,40 @@ ${session.questions.map((q, i) => `Q: ${q}\nA: ${session.answers[i]}`).join('\n'
   - その宗教の歴史的背景および社会文化的影響を簡潔に提示してください。
 - **ユーザーの行動傾向分析:**
   - 回答内容から導き出せるユーザーの行動原理、思想的傾向を記述してください。
-  - 「信仰」「秩序」「自由」「合理」「霊性」などの軸で分類し、どの特性が強いか示してください。
-`;
+          `;
+        // AIに診断結果を依頼
+        const aiResponse = await fetch(MISTRAL_API_URL, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${MISTRAL_API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: 'mistral-medium',
+                messages: [{ role: 'user', content: diagnosisPrompt }]
+            })
+        });
 
-            const diagnosisResponse = await fetch(MISTRAL_API_URL, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${MISTRAL_API_KEY}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    model: 'mistral-medium',
-                    messages: [{ role: 'user', content: diagnosisPrompt }]
-                })
-            });
-
-            const diagnosisData = await diagnosisResponse.json();
-            if (!diagnosisResponse.ok) {
-                console.error("🚨 診断APIエラー:", diagnosisData);
-                throw new Error(diagnosisData.error || 'Mistral API error');
-            }
-
-            // 📌 診断結果を取得
-            const diagnosisResult = diagnosisData.choices[0].message.content.trim();
-
-            // 診断結果をユーザーに送信
-            res.json({
-                reply: `診断が完了しました！\n\n${diagnosisResult}`
-            });
-
-            // 診断結果を保存（任意）
-            session.diagnosis = diagnosisResult;
+        const aiData = await aiResponse.json();
+        if (!aiResponse.ok) {
+            console.error("🚨 Mistral API エラー:", aiData);
+            throw new Error(aiData.error || 'Mistral API error');
         }
+
+        const result = aiData.choices[0].message.content;
+        res.json({ reply: result });
     } catch (error) {
-        console.error("🚨 エラー:", error);
+        console.error("🚨 サーバーエラー:", error);
         res.status(500).json({ error: error.message });
     }
 });
 
+// 📌 最初のページを表示するGETリクエストのルートを追加
+app.get('/', (req, res) => {
+    res.send('宗教診断システムが正常に稼働しています。POSTリクエストで診断を開始できます。');
+});
+
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 サーバーがポート ${PORT} で起動しました`);
+    console.log(`🚀 サーバーはポート ${PORT} で稼働しています。`);
 });
 
