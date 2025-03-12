@@ -169,6 +169,7 @@ ${session.questions.map((q, i) => `Q: ${q}\nA: ${session.answers[i]}`).join('\n'
     }
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 サーバーがポート ${PORT} で起動しました`);
 });
+
